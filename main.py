@@ -77,6 +77,8 @@ try:
             tts.write_to_fp(sound_file)
             st.audio(sound_file)
             st.write('To interpret the braille, ABEG head-over to my senior man')
+            st.markdown('<a href = "https://angelina-reader.ru/">or Visit Angelinas website </a>', unsafe_allow_html=True)
+
 
             # talk(f'image has have braille'+ 'with a probability of'+ yhat[0][0])
 
@@ -92,6 +94,16 @@ try:
         st.write('To take a photo, click on capture below \n note camera functionality is limited at the moment')
         img_file_buffer = st.camera_input("Take a picture")
         st.write('nice face!!!')
+        if img_file_buffer is not None:
+            st.image(img_file_buffer)
+            print('got here23')
+            # To read image file buffer with OpenCV:
+            bytes_data = img_file_buffer.getvalue()
+            cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+            print('got here2')
+            new_model = load_model('brailledetect2.h5',
+                                   compile=False)
+            trigger = st.button('Predict', on_click=predict_upload)
 
 
     else:
