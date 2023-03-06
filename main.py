@@ -67,6 +67,7 @@ try:
                 lang='en')
             tts.write_to_fp(sound_file)
             st.audio(sound_file)
+
             # talk('image does not have braille')
         else:
             text = f'Predicted class is braille ✔. \n There is a {ans}% chance that this picture has braille'
@@ -75,6 +76,8 @@ try:
             tts = gTTS(f'Predicted class is braille. There is a {ans}% chance that this picture has braille', lang='en')
             tts.write_to_fp(sound_file)
             st.audio(sound_file)
+            st.write('To interpret the braille, ABEG head-over to my senior man')
+
             # talk(f'image has have braille'+ 'with a probability of'+ yhat[0][0])
 
 
@@ -86,12 +89,15 @@ try:
         ('upload image', 'take a photo'))
 
     if typer == 'take a photo':
-        st.write('To take a photo, click on capture below')
+        st.write('To take a photo, click on capture below \n note camera functionality is limited at the moment')
         img_file_buffer = st.camera_input("Take a picture")
+        st.write('nice face!!!')
+
 
     else:
         st.write("Kindly upload an image")
-        uploaded_file = st.file_uploader("Choose a file")
+        uploaded_file = st.file_uploader('Choose a file. Note! Allowed formats are :red[".JPG, JPEG, .PNG"]')
+
         # uploadingFile()
         print('a')
         if uploaded_file is not None:
