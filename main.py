@@ -47,6 +47,13 @@ try:
 
     sound_file = BytesIO()
 
+    st.sidebar.markdown('---')
+    confidence = st.sidebar.slider('Braille confidence', min_value=0.5, max_value=1.0, value=0.6)
+
+    st.sidebar.markdown('---')
+
+
+
 
     def predict_upload():
         resize = tf.image.resize(cv2_imgg, (120, 120))
@@ -56,7 +63,11 @@ try:
         print(yhat)
         ans = round(yhat[0][0][0] * 100, 2)
         print('probability value:', yhat[0])
-        if yhat[0] < 0.6:
+
+        sample_coords = yhat[1][0]
+        frame = cv2_imgg
+
+        if yhat[0] < confidence:
             text = f'The uploaded image does not have braille ❌.\n There is a {ans}% chance that this picture has ' \
                    f'braille '
             # print(f'Predicted class does not have braille')
@@ -68,8 +79,10 @@ try:
             tts.write_to_fp(sound_file)
             st.audio(sound_file)
 
+
             # talk('image does not have braille')
-        else:
+        elif yhat[0] > confidence:
+            st.snow()
             text = f'Predicted class is braille ✔. \n There is a {ans}% chance that this picture has braille'
             print(text)
             st.success(text)
@@ -78,7 +91,30 @@ try:
             st.audio(sound_file)
             st.write('To interpret the braille, ABEG head-over to my senior man')
             st.markdown('<a href = "https://angelina-reader.ru/">or Visit Angelinas website </a>', unsafe_allow_html=True)
+            # Controls the main rectangle
+            cv2.rectangle(frame,
+                          tuple(np.multiply(sample_coords[:2], [450, 450]).astype(int)),
+                          tuple(np.multiply(sample_coords[2:], [450, 450]).astype(int)),
+                          (255, 0, 0), 2)
+            # Controls the label rectangle
+            cv2.rectangle(frame,
+                          tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
+                                       [0, -30])),
+                          tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
+                                       [80, 0])),
+                          (255, 0, 0), -1)
 
+            # Controls the text rendered
+            cv2.putText(frame, f'braille', tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
+                                                        [0, -5])),
+                        cv2.FONT_HERSHEY_SIMPLEX, .7, (255, 255, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'confidence: {ans} %',
+                        tuple(np.add(np.multiply(sample_coords[:2], [450, 350]).astype(int),
+                                     [0, -5])),
+                        cv2.FONT_HERSHEY_SIMPLEX, .7, (255, 255, 255), 2, cv2.LINE_AA)
+            # image = cv2.imshow('braille',frame)
+            # print(type(image))
+            st.image(frame, caption='Annotated Image')
 
             # talk(f'image has have braille'+ 'with a probability of'+ yhat[0][0])
 
@@ -106,16 +142,18 @@ try:
             trigger = st.button('Predict', on_click=predict_upload)
 
 
+
+
     else:
         st.write("Kindly upload an image")
-        uploaded_file = st.file_uploader('Choose a file. Note! Allowed formats are :red[".JPG, JPEG, .PNG"]')
+        img_file_buffer = st.file_uploader('Choose a file. Note! Allowed formats are :red[".JPG, JPEG, .PNG"]', type=["jpg", "jpeg", "png"])
 
         # uploadingFile()
         print('a')
-        if uploaded_file is not None:
+        if img_file_buffer is not None:
             # To read file as bytes:
             print('got here0')
-            bytes_data = uploaded_file.getvalue()
+            bytes_data = img_file_buffer.getvalue()
             cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
             # cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 

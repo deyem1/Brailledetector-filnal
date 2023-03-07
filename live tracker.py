@@ -2,6 +2,7 @@ from main import *
 import cv2
 new_model = load_model('brailledetect2.h5',
                                    compile=False)
+
 cap = cv2.VideoCapture(0)
 while cap.isOpened():
     _, frame = cap.read()
@@ -9,8 +10,10 @@ while cap.isOpened():
 
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     resized = tf.image.resize(rgb, (120, 120))
-
+    print(type(frame))
     yhat = new_model.predict(np.expand_dims(resized / 255, 0))
+    ans = round(yhat[0][0][0] * 100, 2)
+
     sample_coords = yhat[1][0]
 
     if yhat[0] > 0.5:
@@ -28,9 +31,13 @@ while cap.isOpened():
                       (255, 0, 0), -1)
 
         # Controls the text rendered
-        cv2.putText(frame, 'braille', tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
+        cv2.putText(frame, f'braille', tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
                                                 [0, -5])),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, .7, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, f'confidence: {ans} %',
+                    tuple(np.add(np.multiply(sample_coords[:2], [450, 350]).astype(int),
+                                 [0, -5])),
+                    cv2.FONT_HERSHEY_SIMPLEX, .7, (255, 255, 255), 2, cv2.LINE_AA)
 
     cv2.imshow('Braille Detect', frame)
 
