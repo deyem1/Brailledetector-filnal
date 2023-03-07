@@ -51,7 +51,10 @@ try:
     confidence = st.sidebar.slider('Braille confidence', min_value=0.5, max_value=1.0, value=0.6)
 
     st.sidebar.markdown('---')
-
+    st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/4/4c/Braille_closeup.jpg", caption='An example of a braille')
+    st.sidebar.markdown('---')
+    st.sidebar.markdown('Keele Group coursework, 2023. Do not Copy!')
+    # feedback = st.sidebar.write()
 
 
 
