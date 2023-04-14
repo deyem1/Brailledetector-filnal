@@ -1,6 +1,4 @@
-# import pywhatkit as pywhatkit
-# import speech_recognition as sr
-# import pyttsx3
+# import dependencies
 import tempfile
 import numpy as np
 import streamlit as st
@@ -12,9 +10,11 @@ import tensorflow as tf
 try:
 
     from tensorflow.keras.models import load_model
-
+    # instance for TTS
     sound_file = BytesIO()
 
+    # Title markdowns
+    # -------------------------------------------Title----------------------------------------------
     st.title('Braille Detector')
     st.markdown("<h3 style='text-align: center; '></h3>", unsafe_allow_html=True)
     st.markdown(
@@ -23,11 +23,11 @@ try:
     st.markdown("<h3 style='text-align: center; '></h3>", unsafe_allow_html=True)
 
 
-
+    # -------------------------------------------------Functions----------------------------------------
+    # function to predict uploaded media
     def predict_upload():
         resize = tf.image.resize(cv2_imgg, (120, 120))
-        print('got here4')
-
+        
         yhat = new_model.predict(np.expand_dims(resize / 120, 0))
         print(yhat)
         ans = round(yhat[0][0][0] * 100, 2)
@@ -48,7 +48,7 @@ try:
                 lang='en')
             tts.write_to_fp(sound_file)
             st.audio(sound_file)
-            # talk('image does not have braille')
+            
 
 
 
@@ -60,7 +60,7 @@ try:
             tts = gTTS(f'Predicted class is braille. There is a {ans}% chance that this picture has braille', lang='en')
             tts.write_to_fp(sound_file)
             st.audio(sound_file)
-            st.write('To interpret the braille, ABEG head-over to my senior man')
+            # st.write('To interpret the braille, ABEG head-over to my senior man')
             st.markdown('<a href = "https://angelina-reader.ru/">or Visit Angelinas website </a>',
                         unsafe_allow_html=True)
             # Controls the main rectangle
@@ -88,8 +88,8 @@ try:
             # print out image to web page
             st.image(frame, caption='Annotated Image')
 
-
-    # caching the data as the function will run repeatedly
+    # Function to display uniform frames of video uploaded
+    # caching the data because the function will run repeatedly
     @st.cache_data
     def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
         dim = None
@@ -131,7 +131,7 @@ try:
             ret, frame = video.read()
             if not ret:
                 continue
-            print('got here4')
+            
             frame = frame[50:500, 50:500, :]
 
             # converting from bgr to rgb
@@ -197,12 +197,14 @@ try:
     #     -------------------------------------------sidebar-----------------------------------------------------------------
     with st.sidebar:
         st.markdown('---')
+        # creating a selectbox for media input type
         file_type = st.sidebar.selectbox('Choose a method to upload file',
                                          ['Upload an image', 'Take a photo', 'Upload a video'])
 
         confidence = st.sidebar.slider('Braille confidence', min_value=0.5, max_value=1.0, value=0.6)
 
         st.markdown('---')
+        # creating markdowns for braille description
         st.image("https://upload.wikimedia.org/wikipedia/commons/4/4c/Braille_closeup.jpg",
                  caption='An example of a braille')
         st.markdown('---')
@@ -210,72 +212,58 @@ try:
         # feedback = st.sidebar.write()
 
 
-    # -------------------------------------------------Body
+
+    # -------------------------------------------------Body-----------------------------------------------------------------------------
 
 
-    #
-    # col1, col2, col3 = st.columns(3)
-    #
-    # with col1:
-    #     st.header("A cat")
-    #     st.image("https://static.streamlit.io/examples/cat.jpg")
-    #
-    # with col2:
-    #     st.header("A dog")
-    #     st.image("https://static.streamlit.io/examples/dog.jpg")
-    #
-    # with col3:
-    #     st.header("An owl")
-    #     st.image("https://static.streamlit.io/examples/owl.jpg")
-
-    # -----------------------------------------------Drop Down Menu---------------------------------------------------------------------------------
+    # --------------------------------------Drop Down Menu Items-----------
     if file_type == 'Take a photo':
         st.write('To take a photo, click on capture below \n note camera functionality is limited at the moment')
         img_file_buffer = st.camera_input("Take a picture")
-        st.write('nice face!!!')
+        
         if img_file_buffer is not None:
             st.image(img_file_buffer)
-            print('got here23')
+            
             # To read image file buffer with OpenCV:
             bytes_data = img_file_buffer.getvalue()
             cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
-            print('got here2')
+            # loading the detection model
             new_model = load_model('brailledetect2.h5',
                                    compile=False)
             trigger = st.button('Predict', on_click=predict_upload)
 
 
 
-
+    # condition if  an image is uploaded
     elif file_type == 'Upload an image':
         st.write("Kindly upload an image")
         img_file_buffer = st.file_uploader('Choose a file. Note! Allowed formats are :red[".JPG, JPEG, .PNG"]',
                                            type=["jpg", "jpeg", "png"])
 
-        # uploadingFile()
-        print('a')
+        # uploadingFile()        
         if img_file_buffer is not None:
             # To read file as bytes:
             print('got here0')
             bytes_data = img_file_buffer.getvalue()
             cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
-            print('got here2')
+            # loading the detection model            
             new_model = load_model('brailledetect2.h5',
                                    compile=False)
-            print('got here2')
+            # Button to predict
             trigger = st.button('Predict', on_click=predict_upload)
         else:
             print('no image')
 
+
+    # condition if a video is uploaded
     elif file_type == 'Upload a video':
         st.write("Kindly upload a video")
         vid = st.file_uploader('Choose a file. Note! Allowed formats are :red["video/mp4"]', ['mp4', 'mov', 'avi'])
         print('heyyhy')
         tfile = tempfile.NamedTemporaryFile(delete=False)
 
-        print('juoooo')
-        #
+        # save files to temp directory
         temp_file_to_save = './temp_file_1.mp4'
         temp_file_result = './temp_file_2.mp4'
         # uploadingFile()
@@ -297,7 +285,6 @@ try:
             out_mp4 = cv2.VideoWriter(temp_file_result, fourcc_mp4, fps_input, (width, height), isColor=False)
 
 
-
             print('got here2')
             new_model = load_model('brailledetect2.h5',
                                    compile=False)
@@ -305,7 +292,7 @@ try:
             trigger = st.button('Predict', on_click=predict_vid_upload)
 
 
-
+# -----------------------------------------------------------Tabs widget-------------------------------------/
 
     tab1, tab2, tab3 = st.tabs(["Instructions", "Braille Alphabets", "Braille on sign"])
 
@@ -353,25 +340,6 @@ Resolution of at least 1000 points vertically and horizontally (photos from most
 
 
 except:
-    print('errorrrrr21')
+    print('error')
 
 
-
- # record
-            # codec = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-            #
-            # # video = cv2.VideoWriter(output_video_path, fourcc, fps, img_size)
-            #
-            # # codec = cv2.VideoWriter_fourcc('M', 'J' 'P', 'G')
-            # out = cv2.Video('output1.mp4', codec, fps_input, (width,height))
-
-            # v2
-
-            # drawing_spec = mp_drawing.DrawingSpec
-            # To read file as bytes:
-            # bytes_data = vid.read()
-            # print('got here0')
-
-            # bytes_data = img_file_buffer.getvalue()
-            # cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
-            # cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
