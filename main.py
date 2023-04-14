@@ -13,6 +13,8 @@ try:
     # instance for TTS
     sound_file = BytesIO()
 
+    Bmodel = 'brailledetect5.h5'
+
     # Title markdowns
     # -------------------------------------------Title----------------------------------------------
     st.title('Braille Detector')
@@ -228,7 +230,7 @@ try:
             bytes_data = img_file_buffer.getvalue()
             cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
             # loading the detection model
-            new_model = load_model('brailledetect2.h5',
+            new_model = load_model(Bmodel,
                                    compile=False)
             trigger = st.button('Predict', on_click=predict_upload)
 
@@ -248,7 +250,7 @@ try:
             cv2_imgg = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
             # loading the detection model            
-            new_model = load_model('brailledetect2.h5',
+            new_model = load_model(Bmodel,
                                    compile=False)
             # Button to predict
             trigger = st.button('Predict', on_click=predict_upload)
@@ -286,7 +288,7 @@ try:
 
 
             print('got here2')
-            new_model = load_model('brailledetect2.h5',
+            new_model = load_model(Bmodel,
                                    compile=False)
             print('got here2')
             trigger = st.button('Predict', on_click=predict_vid_upload)
