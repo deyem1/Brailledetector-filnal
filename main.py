@@ -13,7 +13,7 @@ try:
     # instance for TTS
     sound_file = BytesIO()
 
-    Bmodel = 'brailledetect5.h5'
+    Bmodel = 'brailledetect2.h5'
 
     # Title markdowns
     # -------------------------------------------Title----------------------------------------------
