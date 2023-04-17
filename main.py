@@ -26,7 +26,7 @@ try:
 
 
     # -------------------------------------------------Functions----------------------------------------
-    # function to predict uploaded media
+            
     def predict_upload():
         resize = tf.image.resize(cv2_imgg, (120, 120))
         
@@ -120,7 +120,7 @@ try:
             # Copy the BytesIO stream to the output file
             outfile.write(bytesio.getbuffer())
 
-    #function to predict a video upload
+    #function to detect braille and predict its location in a video upload
     def predict_vid_upload():
         # frame = cv2_imgg
         fps = 0
@@ -163,7 +163,7 @@ try:
                                            [80, 0])),
                               (255, 0, 0), -1)
 
-                # Controls the text rendered
+                # Controls the rendered text 
                 cv2.putText(frame, f'braille', tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
                                                             [0, -5])),
                             cv2.FONT_HERSHEY_SIMPLEX, .7, (255, 255, 255), 2, cv2.LINE_AA)
