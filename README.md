@@ -4,7 +4,7 @@
 The Braille detector is a group project for Artificial Intelligence coursework. The project aims to aid accessibility 
 of visually impaired individuals and aid integration into the society.
 
-# Braille Detection and transcription
+# Braille Detection and Transcription
 The project uses convolutional neural network to recognize Braille characters from images and individually translates each braille character.
 
 # Dataset
@@ -20,15 +20,16 @@ To run successfully this project, you would need to install the dependencies fou
 To use this project, follow these steps:
 
 Web app - Streamlit
-1. Clone the repository to your local machine.
-2. Navigate to the project directory.
+1. Clone the repository to your local machine
+2. Navigate to the project directory
 3. navigate and open main.py
-4. To run the file, in the terminal, enter streamlit run main.py
-5. Ensure the trained Models(brailledetect2.h5) should be in the same folder  
-6. running the app, the app redirects to your local browser 
+4. To run the file successfully, install the dependencies in the requirements.txt by entering [pip install -r requirements.txt] in the terminal
+5. Also in the terminal, enter and run the script using [streamlit run main.py]
+6. Ensure the trained Model (brailledetect2.h5) should be in the same folder  
+7. running the app, the app redirects to your local browser 
 
 Live tracker
-1. Install the dependencies in the requirements.txt
+1. As above, ensure installation of the dependencies in the requirements.txt
 2. In a code editor, preferably pycharm, run the script.
 3. If the camera window does not pop up, change the following code:
         # Starts camera
@@ -36,7 +37,7 @@ Live tracker
 
 
 # Models
-A vgg16 model for braille detection and Sequential model for transcription which are in the Brai Detection - Copy.ipynb and
+A VGG16 model for braille detection and Sequential model for transcription which are in the Brai Detection - Copy.ipynb and
 Braille-character-transcription-cnn.ipynb respectively.
 
 # Credits
